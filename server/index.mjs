@@ -1,6 +1,8 @@
 import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
 import analyzeRouter from './routes/analyze.mjs'
 import extractRouter from './routes/extract.mjs'
 import authRouter from './routes/auth.mjs'
@@ -29,6 +31,10 @@ app.use('/api/auth', authRouter)
 app.use('/api/journal', journalRouter)
 app.use('/api/actions', actionsRouter)
 app.use('/api', periodRouter)
+
+// 静态站点（路演宣传页 /pitch.html 等），与 API 同源托管
+const __dirname = dirname(fileURLToPath(import.meta.url))
+app.use(express.static(join(__dirname, 'public')))
 
 app.listen(PORT, () => {
   console.log(`🌿 看见自己 · 每日觉察手账 后端已启动`)
