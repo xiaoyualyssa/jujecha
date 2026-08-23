@@ -239,6 +239,27 @@
   .cta .btn:hover { background: var(--sage-dark); transform: translateY(-3px); }
   .cta .footnote { margin-top: 24px; font-size: 12px; color: var(--warmgray); }
 
+  /* ===== 种子用户群 ===== */
+  .seed { margin-top: 56px; }
+  .seed .qr-wrap {
+    display: inline-block;
+    background: var(--white);
+    border: 1px solid rgba(90,125,124,.16);
+    border-radius: 28px;
+    padding: 26px 26px 22px;
+    box-shadow: 0 14px 44px rgba(90,125,124,.12);
+    transition: transform .3s ease, box-shadow .3s ease;
+  }
+  .seed .qr-wrap:hover { transform: translateY(-4px); box-shadow: 0 20px 54px rgba(90,125,124,.18); }
+  .seed .qr-wrap img {
+    width: 216px; height: 216px; display: block; border-radius: 14px;
+  }
+  .seed .qr-cap { margin-top: 16px; font-size: 13.5px; color: var(--warmgray); }
+  .seed .qr-note {
+    margin-top: 6px; font-size: 11.5px; color: var(--blush-deep);
+    letter-spacing: 2px; font-weight: 600;
+  }
+
   /* ===== 滚动动画 ===== */
   .reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s ease; }
   .reveal.visible { opacity: 1; transform: translateY(0); }
@@ -506,6 +527,16 @@
       <h2 style="margin-bottom:32px;">2 分钟，看见今天的自己</h2>
       <a class="btn" href="https://8e4c452f0f454790b5066ec6d6c279fa.app.workbuddy.link" target="_blank">立即体验 ↗</a>
       <p class="footnote">数据仅存本地，不上传云端 · AI 分析仅作辅助参考，不替代专业心理咨询</p>
+
+      <div class="seed">
+        <p class="eyebrow">一起成长</p>
+        <h2 style="font-size:clamp(20px,3.4vw,28px);margin-bottom:14px;">扫码加入「看见自己」种子用户群</h2>
+        <div class="qr-wrap reveal">
+          <img src="seed-group-qr.png" alt="微信群二维码 · 扫码加入看见自己种子用户群" />
+          <div class="qr-cap">长按或扫码，加入微信群</div>
+          <div class="qr-note">SEED GROUP · 前 200 名</div>
+        </div>
+      </div>
     </div>
   </section>
 
