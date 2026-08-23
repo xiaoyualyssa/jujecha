@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-cream text-ink font-body antialiased;
+  background-image:
+    radial-gradient(circle at 15% 10%, rgba(245, 230, 232, 0.55), transparent 42%),
+    radial-gradient(circle at 88% 18%, rgba(232, 238, 242, 0.6), transparent 46%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* 圆润可爱的卡片 */
+.card {
+  @apply bg-white/80 backdrop-blur-sm rounded-xl3 shadow-soft border border-white/60;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+/* 主按钮 */
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-full text-white font-medium
+    px-6 py-2.5 text-sm transition-all duration-200
+    active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
+  background-image: linear-gradient(135deg, #5A7D7C 0%, #4A6B6A 100%);
+  box-shadow: 0 8px 20px rgba(90, 125, 124, 0.22);
+}
+.btn-primary:hover {
+  background-image: linear-gradient(135deg, #50716F 0%, #41605F 100%);
+  box-shadow: 0 12px 28px rgba(90, 125, 124, 0.3);
+  transform: translateY(-1px);
+}
+.btn-primary:disabled {
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-ghost {
+  @apply inline-flex items-center justify-center gap-2 rounded-full border border-sage/30 text-sage
+    px-5 py-2.5 text-sm font-medium transition-all duration-200
+    hover:bg-sage-light active:scale-[0.98];
+}
+
+/* 输入框 */
+.input-soft {
+  @apply w-full rounded-2xl border border-warmgray/25 bg-white/70 px-4 py-3 text-sm text-ink
+    placeholder:text-warmgray/50 outline-none transition
+    focus:border-sage focus:ring-4 focus:ring-sage/10;
+}
+
+/* 标签 */
+.label-soft {
+  @apply text-xs font-medium text-warmgray mb-1.5 block;
+}
+
+/* 美化 range 滑杆 */
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #E3ECEB, #E8EEF2);
+  outline: none;
+  cursor: pointer;
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #5A7D7C;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(90, 125, 124, 0.35);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+input[type='range']::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+input[type='range']::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #5A7D7C;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(90, 125, 124, 0.35);
+  cursor: pointer;
+}
+
+/* 日期输入框更柔和 */
+input[type='date'] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* 温和淡入动画 */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up {
+  animation: fadeUp 0.4s ease both;
+}
+
+/* 轻柔呼吸动画（用于加载提示） */
+@keyframes softPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+/* 自定义滚动条，柔和一点 */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: #d8d2ca; border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: #c4bdb4; }

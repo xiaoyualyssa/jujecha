@@ -1,0 +1,35 @@
+{
+  "name": "juecha-shouzhang",
+  "version": "0.1.0",
+  "private": true,
+  "description": "看见自己·每日觉察手账 —— 情绪+身体+想法的结构化记录分析仪",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:server": "node server/index.mjs",
+    "dev:all": "concurrently -n web,api -c cyan,magenta \"vite\" \"node server/index.mjs\"",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "start": "node server/index.mjs"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "pg": "^8.23.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.19",
+    "concurrently": "^8.2.2",
+    "postcss": "^8.4.39",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.24.1",
+    "tailwindcss": "^3.4.6",
+    "typescript": "^5.5.3",
+    "vite": "^5.3.4"
+  }
+}
