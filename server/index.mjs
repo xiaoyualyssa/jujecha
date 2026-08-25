@@ -12,9 +12,11 @@ import periodRouter from './routes/period.mjs'
 
 const app = express()
 const PORT = process.env.PORT || 8787
-const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://localhost:5173'
 
-app.use(cors({ origin: CLIENT_ORIGIN.split(',').map((s) => s.trim()) }))
+// 动态反射请求来源：支持任意 CloudStudio 预览域名 / localhost / 同源，
+// 避免每次更换前端部署地址（CloudStudio 每次部署都会换链接）都要回头改后端白名单而登录被 CORS 拦截。
+// 前端使用 Bearer Token 鉴权（非 cookie），无需开启 credentials。
+app.use(cors({ origin: true }))
 app.use(express.json({ limit: '100kb' }))
 
 // 简单请求日志
