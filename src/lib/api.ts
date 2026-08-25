@@ -36,10 +36,40 @@ function setAuth(token: string, user: AuthUser) {
 export function clearAuth() {
   localStorage.removeItem(TOKEN_KEY)
   localStorage.removeItem(USER_KEY)
+  // 通知各组件登录态已变化（用于跨组件刷新登录态显示）
+  notifyAuthChange()
 }
 
 export function isLoggedIn(): boolean {
   return Boolean(getToken())
+}
+
+// ---------- 全局登录态订阅（让组件/页面在登录、登出、刷新后实时感知） ----------
+
+export type AuthListener = () => void
+const authListeners = new Set<AuthListener>()
+
+function notifyAuthChange() {
+  authListeners.forEach((fn) => {
+    try {
+      fn()
+    } catch {
+      /* 忽略单个监听失败 */
+    }
+  })
+}
+
+/** 订阅登录态变化，返回取消订阅函数 */
+export function onAuthChange(fn: AuthListener): () => void {
+  authListeners.add(fn)
+  return () => authListeners.delete(fn)
+}
+
+// 监听其它标签页/窗口的登录态变化（同源下 localStorage 共享）
+if (typeof window !== 'undefined' && window.addEventListener) {
+  window.addEventListener('storage', (e) => {
+    if (e.key === TOKEN_KEY || e.key === USER_KEY) notifyAuthChange()
+  })
 }
 
 async function request(path: string, options: RequestInit = {}) {

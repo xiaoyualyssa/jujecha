@@ -1,5 +1,6 @@
 // 通用 UI 小组件
 import { useRef, useState } from 'react'
+import { addUserBodyWord, addUserMoodWord } from '../lib/types'
 
 export function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return <div className={`card p-5 ${className}`}>{children}</div>
@@ -117,6 +118,13 @@ export function FeelingPicker({
       return
     }
     onChange([...values, { label: '', custom: t, score: 5, display: t }])
+    // 把自定义词持久化，后续记录中仍保留在选项列表里
+    try {
+      if (accent === 'blush') addUserMoodWord(t)
+      else addUserBodyWord(t)
+    } catch {
+      /* 忽略 */
+    }
     setCustomText('')
   }
 

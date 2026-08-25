@@ -3,13 +3,14 @@ import { Link, useNavigate } from 'react-router-dom'
 import { deleteEntry, getEntriesByDate, saveEntry, todayStr, uid } from '../lib/storage'
 import { isLoggedIn } from '../lib/api'
 import {
-  BODY_OPTIONS, MOOD_OPTIONS,
+  getAllBodyOptions, getAllMoodOptions,
   type ActionKind, type FeelingScore, type JournalEntry, type MyAction,
 } from '../lib/types'
 import { extractFields } from '../lib/ai'
 import { Card, FeelingPicker, Notice, SectionTitle } from '../components/ui'
 
-function fmtTime(ts: number) {
+function fmtTime(ts: number | undefined | null) {
+  if (!ts || Number.isNaN(ts)) return '——'
   const d = new Date(ts)
   return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`
 }
@@ -62,6 +63,10 @@ export default function RecordPage() {
 
   const loggedIn = isLoggedIn()
   const isEdit = editingId !== null
+
+  // 预设 + 用户自定义词（曾添加过的词会一直留在选项里）
+  const moodOptions = useMemo(() => getAllMoodOptions(), [version])
+  const bodyOptions = useMemo(() => getAllBodyOptions(), [version])
 
   // 表单区域引用，用于「再记一条」后平滑滚动到顶部开始填写
   const formRef = useRef<HTMLDivElement>(null)
@@ -233,7 +238,7 @@ export default function RecordPage() {
                     : 'bg-white/70 text-ink border-warmgray/15 hover:border-sage/40 hover:bg-white'
                 }`}
               >
-                <span className="text-xs opacity-80">{fmtTime(e.createdAt)}</span>
+                <span className="text-xs opacity-80">{fmtTime(e.timestamp ?? e.createdAt)}</span>
                 <span>{e.emotions[0]?.display ?? '未记录情绪'}</span>
               </button>
             ))}
@@ -295,12 +300,12 @@ export default function RecordPage() {
 
         {/* 2. 身体感受 */}
         <Card>
-          <FeelingPicker title="2 · 我的身体感受（躯体信号 + 强度打分）" options={BODY_OPTIONS} values={bodyFeelings} onChange={setBodyFeelings} accent="mist" addLabel="添加身体感受" placeholder="比如「喉咙发紧」「后颈发烫」……" />
+          <FeelingPicker title="2 · 我的身体感受（躯体信号 + 强度打分）" options={bodyOptions} values={bodyFeelings} onChange={setBodyFeelings} accent="mist" addLabel="添加身体感受" placeholder="比如「喉咙发紧」「后颈发烫」……" />
         </Card>
 
         {/* 3. 情绪 */}
         <Card>
-          <FeelingPicker title="3 · 我的情绪（精准命名 + 强度打分）" options={MOOD_OPTIONS} values={emotions} onChange={setEmotions} accent="blush" addLabel="添加情绪词" placeholder="如果选项里没有，写下你自己的词……" />
+          <FeelingPicker title="3 · 我的情绪（精准命名 + 强度打分）" options={moodOptions} values={emotions} onChange={setEmotions} accent="blush" addLabel="添加情绪词" placeholder="如果选项里没有，写下你自己的词……" />
         </Card>
 
         {/* 4. 自动思维 */}

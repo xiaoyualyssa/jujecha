@@ -154,10 +154,13 @@ export async function pullFromCloud() {
   const local = getEntries()
   const map = new Map(local.map((e) => [e.id, e]))
   remoteEntries.forEach((r: any) => {
+    // 优先保留本地已有的 timestamp（记录当天的真实时刻），云端没有则兜底 createdAt
+    const localTs = local.find((e) => e.id === r.id)?.timestamp
+    const createdAt = typeof r.createdAt === 'number' ? r.createdAt : Date.now()
     map.set(r.id, {
       id: r.id,
       date: r.date,
-      timestamp: r.updatedAt || r.createdAt,
+      timestamp: localTs ?? (typeof r.updatedAt === 'number' ? r.updatedAt : createdAt),
       event: r.event || '',
       bodyFeelings: r.bodyFeelings || [],
       emotions: r.emotions || [],
@@ -166,8 +169,8 @@ export async function pullFromCloud() {
       tinyJoy: r.tinyJoy || '',
       selfCare: r.selfCare || '',
       satisfaction: r.satisfaction ?? 3,
-      createdAt: r.createdAt || Date.now(),
-      updatedAt: r.updatedAt || Date.now(),
+      createdAt,
+      updatedAt: typeof r.updatedAt === 'number' ? r.updatedAt : Date.now(),
       cloudSynced: true,
     } as JournalEntry)
   })

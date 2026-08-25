@@ -110,6 +110,62 @@ export const BODY_OPTIONS: string[] = [
   '失眠', '乏力', '呼吸短促', '紧绷', '放松', '精力充沛',
 ]
 
+// ---------- 用户自定义词（持久化，加进记录后留在选项里） ----------
+
+const USER_MOOD_KEY = 'juecha:userMoods:v1'
+const USER_BODY_KEY = 'juecha:userBodies:v1'
+
+function readUserWords(key: string): string[] {
+  try {
+    const raw = localStorage.getItem(key)
+    if (!raw) return []
+    const arr = JSON.parse(raw)
+    return Array.isArray(arr) ? arr.filter((x) => typeof x === 'string' && x.trim()) : []
+  } catch {
+    return []
+  }
+}
+
+function writeUserWords(key: string, words: string[]) {
+  try {
+    localStorage.setItem(key, JSON.stringify([...new Set(words.map((w) => w.trim()).filter(Boolean))]))
+  } catch {
+    /* 忽略写入失败 */
+  }
+}
+
+/** 读取用户曾添加过的自定义情绪词 */
+export function getUserMoodWords(): string[] {
+  return readUserWords(USER_MOOD_KEY)
+}
+
+/** 读取用户曾添加过的自定义身体感受词 */
+export function getUserBodyWords(): string[] {
+  return readUserWords(USER_BODY_KEY)
+}
+
+/** 把用户新加的自定义词追加保存（与预设合并后用于选项列表） */
+export function addUserMoodWord(word: string) {
+  const t = (word || '').trim()
+  if (!t || MOOD_OPTIONS.includes(t)) return
+  writeUserWords(USER_MOOD_KEY, [...getUserMoodWords(), t])
+}
+
+export function addUserBodyWord(word: string) {
+  const t = (word || '').trim()
+  if (!t || BODY_OPTIONS.includes(t)) return
+  writeUserWords(USER_BODY_KEY, [...getUserBodyWords(), t])
+}
+
+/** 预设 + 用户自定义词（去重）合并后的完整选项列表 */
+export function getAllMoodOptions(): string[] {
+  return [...MOOD_OPTIONS, ...getUserMoodWords()]
+}
+
+export function getAllBodyOptions(): string[] {
+  return [...BODY_OPTIONS, ...getUserBodyWords()]
+}
+
 /** 情绪配色 */
 export const MOOD_COLORS: Record<string, string> = {
   '平静': '#5A7D7C',

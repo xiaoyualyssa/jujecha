@@ -4,6 +4,21 @@ import { apiLogin, apiRegister, syncLocalToCloud } from '../lib/api'
 import { pullFromCloud } from '../lib/storage'
 import { Card, SectionTitle } from '../components/ui'
 
+// 登录/注册后：先把本地可能已存在的记录同步到云端（避免登录前写的记录丢失），再拉取云端数据覆盖本地
+async function syncThenPull() {
+  try {
+    const n = await syncLocalToCloud()
+    if (n > 0) console.info(`已同步 ${n} 条本地记录到云端`)
+  } catch (e) {
+    console.warn('本地记录同步失败', e)
+  }
+  try {
+    await pullFromCloud()
+  } catch (e) {
+    console.warn('拉取云端数据失败', e)
+  }
+}
+
 export default function AuthPage({ mode }: { mode: 'login' | 'register' }) {
   const navigate = useNavigate()
   const [username, setUsername] = useState('')
@@ -23,21 +38,12 @@ export default function AuthPage({ mode }: { mode: 'login' | 'register' }) {
     try {
       if (isLogin) {
         await apiLogin(username.trim(), password)
-        // 登录成功：先从云端拉取覆盖本地（云端为准）
-        try {
-          await pullFromCloud()
-        } catch (e) {
-          console.warn('拉取云端数据失败', e)
-        }
+        // 登录成功：先把本地记录同步到云端，再拉取云端覆盖本地（云端为准）
+        await syncThenPull()
       } else {
         await apiRegister(username.trim(), password)
         // 注册成功后：把本地已有数据同步到云端
-        try {
-          const n = await syncLocalToCloud()
-          if (n > 0) console.info(`已同步 ${n} 条本地记录到云端`)
-        } catch (e) {
-          console.warn('本地数据同步失败', e)
-        }
+        await syncThenPull()
       }
       navigate('/me')
     } catch (e: any) {

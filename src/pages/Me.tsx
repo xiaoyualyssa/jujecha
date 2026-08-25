@@ -1,6 +1,7 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getActions, getEntries } from '../lib/storage'
-import { clearAuth, getUser, isLoggedIn } from '../lib/api'
+import { clearAuth, getUser, isLoggedIn, onAuthChange } from '../lib/api'
 import { Card, SectionTitle } from '../components/ui'
 
 const ITEMS = [
@@ -31,13 +32,18 @@ export default function MePage() {
   const entries = getEntries()
   const actions = getActions()
   const doneActions = actions.filter((a) => a.status === 'done').length
-  const user = getUser()
-  const loggedIn = isLoggedIn()
+  // 用 state 持有登录态，并订阅全局变化（登录/登出/刷新后实时更新，不再依赖手动刷新页面）
+  const [loggedIn, setLoggedIn] = useState(() => isLoggedIn())
+  const [user, setUser] = useState(() => getUser())
+  useEffect(() => onAuthChange(() => {
+    setLoggedIn(isLoggedIn())
+    setUser(getUser())
+  }), [])
 
   function handleLogout() {
     clearAuth()
-    // 简单刷新状态
-    setTimeout(() => window.location.reload(), 300)
+    setLoggedIn(false)
+    setUser(null)
   }
 
   return (
@@ -57,7 +63,7 @@ export default function MePage() {
             </div>
             <div className="flex-1">
               <div className="font-display font-medium text-ink">{user.username}</div>
-              <div className="text-xs text-sage mt-0.5">☁️ 已登录 · 记录已同步到云端</div>
+              <div className="text-xs text-sage mt-0.5">☁️ 已登录 · 记录已同步到云端 · 已记住登录</div>
             </div>
             <button type="button" onClick={handleLogout} className="btn-ghost !px-4 !py-1.5 text-xs">
               退出登录
