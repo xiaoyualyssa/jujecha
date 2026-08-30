@@ -29,7 +29,12 @@ router.post('/analyze', async (req, res) => {
 
 /** 健康检查 */
 router.get('/health', (_req, res) => {
-  res.json({ ok: true, service: '看见自己·每日觉察手账', time: Date.now() })
+  res.json({
+    ok: true,
+    service: '看见自己·每日觉察手账',
+    time: Date.now(),
+    db: process.env.DATABASE_URL ? 'pg(configured)' : 'sqlite(fallback)',
+  })
 })
 
 export default router
